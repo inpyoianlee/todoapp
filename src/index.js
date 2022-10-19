@@ -11,21 +11,24 @@ const App = () => {
   async function getAllTodoitems() {
     try {
       const allTodoitems = await getTodoitems();
-      setTodoitems(allTodoitems)
+      setTodoitems(allTodoitems);
     } catch(error) {
       console.error(error)
     }
   }
 
-  useEffect(() => getAllTodoitems())
-
-  console.log(todoitems)
+  useEffect(() => {
+    getAllTodoitems();
+  }, [])
 
   return (
     <Box display='flex' flexDirection='column' alignItems='center' width='100%' height='100%'>
       <CssBaseline />
       <Header />
-
+      <Todoitem />
+      {todoitems.map(item => {
+        return <Todoitem id={item.id} name={item.name} isComplete={item.isComplete} startDate={item.startDate} endDate={item.endDate}/>
+      })}
     </Box>
   );
 };
