@@ -1,6 +1,6 @@
+import { Box, Typography, Button, TextField, MenuItem } from "@mui/material";
 import { React, useState } from "react";
-import { Box, Checkbox, Typography, FormGroup, FormControlLabel, Button, TextField, MenuItem } from "@mui/material";
-import { putTodoitem, deleteTodoitem } from '../api'
+import { postTodoitem } from '../api';
 
 function datestring(date) {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -9,34 +9,25 @@ function datestring(date) {
     return returnString
 }
 
-export default function Todoitem({id, name, isComplete, startDate, endDate}) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const startString = datestring(start)
-    const endString = datestring(end)
+const Addnewitem = () => {
+    const defaultDate = new Date();
 
-    // hook for whether the item is complete or not
-    const [complete, setComplete] = useState(isComplete);
-    // boolean that is true when user is trying to edit a todo item
-    const [edit, setEdit] = useState(false);
+    const [addBool, setAddBool] = useState(false);
+    const [newName, setNewName] = useState('');
 
-    const [newName, setNewName] = useState(name);
-    // hooks for start date
-    const [startMonth, setStartMonth] = useState(start.getMonth());
-    const [startDay, setStartDay] = useState(start.getDay());
-    const [startYear, setStartYear] = useState(start.getFullYear());
-    const [newStartDate, setNewStartdate] = useState(startString)
+    const [startMonth, setStartMonth] = useState(defaultDate.getMonth())
+    const [startDay, setStartDay] = useState(defaultDate.getDay())
+    const [startYear, setStartYear] = useState(defaultDate.getFullYear())
 
-    const [endMonth, setEndMonth] = useState(start.getMonth());
-    const [endDay, setEndDay] = useState(start.getDay());
-    const [endYear, setEndYear] = useState(start.getFullYear());
-    const [newEndDate, setNewEndDate] = useState(endString);
+    const [endMonth, setEndMonth] = useState(defaultDate.getMonth())
+    const [endDay, setEndDay] = useState(defaultDate.getDay())
+    const [endYear, setEndYear] = useState(defaultDate.getFullYear())
 
 
-    if (edit) {
+    if (addBool) {
         return (
             <Box display='flex' flexDirection='column' border='1px solid black' width='50%' padding='15px' alignItems='space'>
-                <Typography variant='h6' sx={{textDecoration: 'underline', fontWeight: 'bold'}}>Edit To do</Typography>
+                <Typography variant='h6' sx={{textDecoration: 'underline', fontWeight: 'bold'}}>Add new to do item</Typography>
                 <Box component='form'>
                     <Typography variant="body1" sx={{textDecoration: 'underline'}}>To do item</Typography>
                     <TextField variant="outlined" value={newName} onChange={(e) => setNewName(e.target.value)}/>
@@ -82,17 +73,15 @@ export default function Todoitem({id, name, isComplete, startDate, endDate}) {
                         e.preventDefault();
                         const newStartString = new Date(startMonth + '-' + startDay + '-' + startYear);
                         const newEndString = new Date(endMonth + '-' + endDay + '-' + endYear)
-                        setNewStartdate(datestring(newStartString));
-                        setNewEndDate(datestring(newEndString));
-                        let result = confirm("Are you sure you want to edit this item?")
-                        if (result) {
-                            try {
-                                await putTodoitem(id, newName, complete, newStartString, newEndString);
-                                setEdit(false);
-                            } catch (error) {
-                                console.error(error);
-                            }
+                        try {
+                            await postTodoitem(newName, false, newStartString, newEndString);
+                            setAddBool(false);
+                        } catch (error) {
+                            console.error(error);
                         }
+
+                        alert('Item succesfully added!')
+                        window.location.reload(false);
                     }}>Submit</Button>
                 </Box>
             </Box>
@@ -100,28 +89,9 @@ export default function Todoitem({id, name, isComplete, startDate, endDate}) {
     }
 
     return (
-        <Box display='flex' flexDirection='column' border='1px solid black' width='50%' padding='15px' alignItems='space'>
-            <Typography variant='h6' sx={{textDecoration: 'underline', fontWeight: 'bold'}}>{newName}</Typography>
-            <Typography variant='h6' sx={{textDecoration: 'underline'}}>Start Time:</Typography><Typography variant="subtitle1">{newStartDate}</Typography>
-            <Typography variant='h6' sx={{textDecoration: 'underline'}}>End Time:</Typography><Typography variant="subtitle1">{newEndDate}</Typography>
-            <Box display='flex' alignItems='space-between'>
-                <FormGroup>
-                    <FormControlLabel control={<Checkbox />} label="Complete" checked={ complete } onClick={(e) => setComplete(!complete)}/>
-                </FormGroup>
-                <Button variant='contained' onClick={() => setEdit(true) }>Edit</Button>
-                <Button variant='contained' onClick={async (e) => {
-                    e.preventDefault();
-                    let result = confirm("Are you sure you want to delete this item?")
-                    if (result) {
-                        try {
-                            await deleteTodoitem(id);
-                            window.location.reload(false);
-                        }catch (error) {
-                            console.error(error);
-                        }
-                    }
-                }} color='error'>Delete</Button>
-            </Box>
-        </Box>
+        <Button variant='contained' onClick={() => setAddBool(true)}>Add to do item</Button>
     )
+
 }
+
+export default Addnewitem;

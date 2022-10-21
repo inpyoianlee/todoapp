@@ -11,10 +11,25 @@ export async function getTodoitems() {
   }
 }
 
+export async function postTodoitem(name, isComplete = false, startDate, endDate) {
+  try {
+    await axios.post(`${ BASE }/todoitems`, {name, isComplete, startDate, endDate})
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function putTodoitem(id, name, isComplete, startDate, endDate) {
   try {
-    const { data } = await axios.put(`${ BASE }/todoitems/${id}`, {id, name, isComplete, startDate, endDate});
-    return data;
+    await axios.put(`${ BASE }/todoitems/${id}`, {id, name, isComplete, startDate, endDate});
+  } catch(error) {
+    throw error;
+  }
+}
+
+export async function deleteTodoitem(id) {
+  try {
+    await axios.delete(`${ BASE }/todoitems/${id}`);
   } catch(error) {
     throw error;
   }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { Header, Todoitem} from './components'
+import { Addnewitem, Header, Todoitem} from './components'
 import { BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
 import { Box, CssBaseline, Grid } from '@mui/material';
 import { getTodoitems } from './api'
@@ -28,6 +28,7 @@ const App = () => {
       {todoitems.map(item => {
         return <Todoitem id={item.id} name={item.name} isComplete={item.isComplete} startDate={item.startDate} endDate={item.endDate}/>
       })}
+      <Addnewitem />
     </Box>
   );
 };
