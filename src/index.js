@@ -25,7 +25,6 @@ const App = () => {
     <Box display='flex' flexDirection='column' alignItems='center' width='100%' height='100%'>
       <CssBaseline />
       <Header />
-      <Todoitem />
       {todoitems.map(item => {
         return <Todoitem id={item.id} name={item.name} isComplete={item.isComplete} startDate={item.startDate} endDate={item.endDate}/>
       })}
